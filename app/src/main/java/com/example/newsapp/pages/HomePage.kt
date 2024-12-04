@@ -1,7 +1,6 @@
 package com.example.newsapp.pages
 
 
-import android.R.attr.category
 import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -32,20 +31,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.size.Scale
 import com.dfl.newsapi.enums.Category
 import com.dfl.newsapi.model.ArticleDto
 import com.example.newsapp.DetailsPageScreen
-import java.nio.file.WatchEvent
 
 
 @Composable
@@ -122,6 +118,7 @@ fun Categories(newsViewModel: NewsViewModel) {
     var isSearchExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     val context= LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier= Modifier.fillMaxWidth().padding(8.dp).horizontalScroll(rememberScrollState())
     ) {
@@ -134,7 +131,10 @@ fun Categories(newsViewModel: NewsViewModel) {
                     IconButton(onClick = {
                         if(searchQuery.isNotEmpty()){
                             newsViewModel.getAllQueryHeadline(searchQuery)
+                            keyboardController?.hide()
                         }else{
+                            isSearchExpanded=false
+                            keyboardController?.hide()
                             Toast.makeText(context,"Serach field cannot be empty!!", Toast.LENGTH_SHORT).show()
                         }
 
